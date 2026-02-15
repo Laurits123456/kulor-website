@@ -56,35 +56,6 @@
         }
 
         /* ═══════════════════════════════════════
-           GRAIN OVERLAY
-           ═══════════════════════════════════════ */
-        .grain {
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            z-index: 9999;
-            pointer-events: none;
-            opacity: 0.035;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            animation: grain 8s steps(1) infinite;
-        }
-
-        @keyframes grain {
-            0%, 100% { transform: translate(0, 0); }
-            10% { transform: translate(-5%, -10%); }
-            20% { transform: translate(-15%, 5%); }
-            30% { transform: translate(7%, -25%); }
-            40% { transform: translate(-5%, 25%); }
-            50% { transform: translate(-15%, 10%); }
-            60% { transform: translate(15%, 0%); }
-            70% { transform: translate(0%, 15%); }
-            80% { transform: translate(3%, 35%); }
-            90% { transform: translate(-10%, 10%); }
-        }
-
-        /* ═══════════════════════════════════════
            NAVIGATION
            ═══════════════════════════════════════ */
         .nav {
@@ -577,7 +548,7 @@
         }
 
         /* ═══════════════════════════════════════
-           PRISER (Pricing)
+           PRISER (Pricing) - IMPROVED
            ═══════════════════════════════════════ */
         .pricing-section {
             padding: 8rem 3rem;
@@ -590,8 +561,8 @@
 
         .pricing-item {
             display: flex;
-            align-items: baseline;
-            padding: 2rem 0;
+            align-items: center;
+            padding: 3rem 0;
             border-bottom: 1px solid rgba(245, 243, 239, 0.08);
         }
 
@@ -600,9 +571,10 @@
         }
 
         .pricing-name {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: 500;
             white-space: nowrap;
+            min-width: 180px;
         }
 
         .pricing-dots {
@@ -615,17 +587,20 @@
         }
 
         .pricing-price {
-            font-size: 1.3rem;
-            font-weight: 600;
+            font-size: 3rem;
+            font-weight: 700;
             white-space: nowrap;
+            color: var(--white);
+            min-width: 180px;
+            text-align: right;
         }
 
         .pricing-desc {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 300;
             color: var(--gray-3);
-            margin-top: 0.3rem;
+            margin-top: 0.5rem;
         }
 
         .pricing-left {
@@ -635,19 +610,83 @@
         .pricing-right {
             flex-shrink: 0;
             text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 1rem;
         }
 
-        @media (max-width: 600px) {
+        /* CTA Button in pricing */
+        .pricing-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--white);
+            color: var(--black);
+            border: 1px solid var(--white);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pricing-cta:hover {
+            background: transparent;
+            color: var(--white);
+        }
+
+        /* Custom pricing row - special styling */
+        .pricing-item.custom {
+            background: rgba(245, 243, 239, 0.03);
+            margin: 0 -2rem;
+            padding: 3rem 2rem;
+            border-radius: 8px;
+            border: 1px solid rgba(245, 243, 239, 0.08);
+        }
+
+        .pricing-item.custom .pricing-name {
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .pricing-item.custom .pricing-price {
+            font-size: 1.8rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--gray-3);
+        }
+
+        @media (max-width: 700px) {
             .pricing-item {
                 flex-direction: column;
-                gap: 0.5rem;
+                align-items: flex-start;
+                gap: 1rem;
             }
             .pricing-dots { display: none; }
-            .pricing-right { text-align: left; }
+            .pricing-right { 
+                text-align: left; 
+                align-items: flex-start;
+                width: 100%;
+            }
+            .pricing-price {
+                font-size: 2.5rem;
+                text-align: left;
+            }
+            .pricing-name {
+                font-size: 1.3rem;
+            }
+            .pricing-item.custom {
+                margin: 0;
+                padding: 2rem;
+            }
         }
 
         /* ═══════════════════════════════════════
-           CTA
+           KONTAKT (Contact) - IMPROVED
            ═══════════════════════════════════════ */
         .cta-section {
             padding: 10rem 3rem;
@@ -687,12 +726,166 @@
             color: var(--black);
         }
 
-        .cta-tel {
-            display: block;
-            font-size: 1rem;
-            font-weight: 300;
+        .cta-contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .cta-phone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cta-phone-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
             color: var(--gray-3);
+        }
+
+        .cta-phone-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .cta-phone-number:hover {
+            color: var(--gray-3);
+        }
+
+        .cta-email {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cta-email-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gray-3);
+        }
+
+        .cta-email-address {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .cta-email-address:hover {
+            color: var(--gray-3);
+        }
+
+        /* Simple contact form */
+        .contact-form {
+            max-width: 500px;
+            margin: 4rem auto 0;
+            text-align: left;
+        }
+
+        .contact-form-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--gray-3);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group.full {
+            width: 100%;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
             letter-spacing: 0.1em;
+            color: var(--gray-3);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(245, 243, 239, 0.05);
+            border: 1px solid rgba(245, 243, 239, 0.1);
+            border-radius: 4px;
+            color: var(--white);
+            font-family: var(--font);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--white);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--white);
+            color: var(--black);
+            border: 1px solid var(--white);
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .form-submit:hover {
+            background: transparent;
+            color: var(--white);
+        }
+
+        @media (max-width: 600px) {
+            .cta-contact-info {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            .cta-phone-number {
+                font-size: 1.6rem;
+            }
+            .cta-email-address {
+                font-size: 1.2rem;
+            }
+            .form-row {
+                flex-direction: column;
+            }
         }
 
         /* ═══════════════════════════════════════
@@ -776,9 +969,6 @@
     </style>
 </head>
 <body>
-    <!-- Grain overlay -->
-    <div class="grain"></div>
-
     <!-- Scroll progress bar -->
     <div class="scroll-progress" id="scrollProgress"></div>
 
@@ -940,7 +1130,7 @@
         </div>
     </section>
 
-    <!-- Priser / Pricing -->
+    <!-- Priser / Pricing - IMPROVED -->
     <section class="pricing-section" id="priser">
         <div class="pricing-list">
             <div class="section-label reveal-line">Gennemsigtige priser</div>
@@ -953,6 +1143,7 @@
                 <div class="pricing-dots"></div>
                 <div class="pricing-right">
                     <div class="pricing-price">2.500 kr.</div>
+                    <a href="mailto:kontakt@kulor.studio?subject=Landingsside" class="pricing-cta">Kom i gang →</a>
                 </div>
             </div>
 
@@ -964,10 +1155,11 @@
                 <div class="pricing-dots"></div>
                 <div class="pricing-right">
                     <div class="pricing-price">5.000 kr.</div>
+                    <a href="mailto:kontakt@kulor.studio?subject=Hjemmeside" class="pricing-cta">Kom i gang →</a>
                 </div>
             </div>
 
-            <div class="pricing-item reveal-line">
+            <div class="pricing-item custom reveal-line">
                 <div class="pricing-left">
                     <div class="pricing-name">Custom</div>
                     <span class="pricing-desc">Større projekter og specialløsninger</span>
@@ -975,16 +1167,47 @@
                 <div class="pricing-dots"></div>
                 <div class="pricing-right">
                     <div class="pricing-price">Lad os snakke</div>
+                    <a href="mailto:kontakt@kulor.studio?subject=Custom projekt" class="pricing-cta">Kontakt os →</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA -->
+    <!-- Kontakt / Contact - IMPROVED -->
     <section class="cta-section" id="kontakt">
         <h2 class="cta-heading reveal">Klar til en ny<br>hjemmeside?</h2>
-        <a href="mailto:kontakt@kuloer.dk" class="cta-button reveal">Start dit projekt &rarr;</a>
-        <a href="tel:+4522442766" class="cta-tel reveal">+45 22 44 27 66</a>
+        <a href="mailto:kontakt@kulor.studio?subject=Nyt projekt" class="cta-button reveal">Start dit projekt &rarr;</a>
+        
+        <div class="cta-contact-info reveal">
+            <div class="cta-phone">
+                <span class="cta-phone-label">Ring til os</span>
+                <a href="tel:+4522442766" class="cta-phone-number">+45 22 44 27 66</a>
+            </div>
+            <div class="cta-email">
+                <span class="cta-email-label">Skriv til os</span>
+                <a href="mailto:kontakt@kulor.studio" class="cta-email-address">kontakt@kulor.studio</a>
+            </div>
+        </div>
+
+        <!-- Simple contact form -->
+        <form class="contact-form reveal" action="https://formspree.io/f/kulor" method="POST">
+            <div class="contact-form-title">Eller skriv en besked</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Navn</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+            </div>
+            <div class="form-group full">
+                <label for="message">Besked</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="form-submit">Send besked</button>
+        </form>
     </section>
 
     <!-- Footer -->
@@ -1002,7 +1225,7 @@
             </div>
         </div>
         <div class="footer-center">
-            <a href="mailto:kontakt@kuloer.dk">kontakt@kuloer.dk</a>
+            <a href="mailto:kontakt@kulor.studio">kontakt@kulor.studio</a>
             <a href="tel:+4522442766">+45 22 44 27 66</a>
         </div>
         <div class="footer-right">
