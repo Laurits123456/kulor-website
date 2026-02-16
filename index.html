@@ -1208,7 +1208,7 @@
         </div>
 
         <!-- Simple contact form -->
-        <form class="contact-form reveal" action="https://formspree.io/f/kulor" method="POST">
+        <form class="contact-form reveal" id="contactForm">
             <div class="contact-form-title">Eller skriv en besked</div>
             <div class="form-row">
                 <div class="form-group">
@@ -1450,6 +1450,19 @@
                     lenis.scrollTo(target, { offset: -80 });
                 }
             });
+        });
+
+        // ═══════════════════════════════════════
+        // CONTACT FORM MAILTO
+        // ═══════════════════════════════════════
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = this.querySelector('[name="name"]').value;
+            const email = this.querySelector('[name="email"]').value;
+            const message = this.querySelector('[name="message"]').value;
+            const subject = encodeURIComponent('Henvendelse fra ' + name);
+            const body = encodeURIComponent('Fra: ' + name + '\nEmail: ' + email + '\n\n' + message);
+            window.location.href = 'mailto:lauritsbonsvigwehding@gmail.com?subject=' + subject + '&body=' + body;
         });
     </script>
 </body>
