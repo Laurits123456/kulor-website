@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KULØR — Vi bygger hjemmesider der virker</title>
+    <meta name="description" content="Kulør er et dansk webbureau med fokus på design, hastighed og konvertering. Hjemmesider fra 2.500 kr.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" href="/favicon.ico">
+    <style>
+        /* ═══════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --black: #0F0F0F;
+            --white: #F5F3EF;
+            --gray-1: #333;
+            --gray-2: #666;
+            --gray-3: #999;
+            --gray-4: #CCC;
+            --font: 'Outfit', sans-serif;
+        }
+
+        html { background: var(--black); }
+
+        body {
+            font-family: var(--font);
+            background: var(--black);
+            color: var(--white);
+            font-weight: 300;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        img { display: block; max-width: 100%; }
+
+        /* ═══════════════════════════════════════
+           SCROLL PROGRESS BAR
+           ═══════════════════════════════════════ */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--white);
+            z-index: 10000;
+            transition: none;
+        }
+
+        /* ═══════════════════════════════════════
+           NAVIGATION
+           ═══════════════════════════════════════ */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9998;
+            padding: 1.5rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.4s ease, backdrop-filter 0.4s ease, padding 0.3s ease;
+        }
+
+        .nav.scrolled {
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 1rem 3rem;
+        }
+
+        .nav-logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--gray-3);
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--white);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover { color: var(--white); }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            z-index: 10001;
+            padding: 10px;
+        }
+
+        .hamburger span {
+            width: 28px;
+            height: 2.5px;
+            background: var(--white);
+            transition: all 0.3s ease;
+            display: block;
+            border-radius: 2px;
+        }
+
+        .hamburger span:nth-child(2) {
+            margin: 6px 0;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* Mobile menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--black);
+            z-index: 10000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .mobile-menu.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-menu a {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--white);
+        }
+
+        @media (max-width: 768px) {
+            .nav { padding: 1.2rem 1.5rem; }
+            .nav.scrolled { padding: 0.8rem 1.5rem; }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .mobile-menu { display: flex; }
+        }
+
+        /* ═══════════════════════════════════════
+           HERO
+           ═══════════════════════════════════════ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: clamp(4rem, 15vw, 14rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-swatch {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero-swatch span {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            font-weight: 300;
+            color: var(--gray-3);
+            margin-bottom: 3rem;
+            letter-spacing: 0.02em;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            border: 1px solid var(--gray-2);
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--white);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .hero-cta:hover {
+            background: var(--white);
+            color: var(--black);
+            border-color: var(--white);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--gray-3);
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--gray-3), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 1; transform: scaleY(1); }
+            50% { opacity: 0.3; transform: scaleY(0.5); }
+        }
+
+        /* ═══════════════════════════════════════
+           MARQUEE
+           ═══════════════════════════════════════ */
+        .marquee-section {
+            padding: 2rem 0;
+            overflow: hidden;
+            border-top: 1px solid rgba(245, 243, 239, 0.08);
+            border-bottom: 1px solid rgba(245, 243, 239, 0.08);
+        }
+
+        .marquee-track {
+            display: flex;
+            animation: marqueeScroll 20s linear infinite;
+            width: max-content;
+        }
+
+        .marquee-track span {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+            padding: 0 2rem;
+            color: var(--gray-2);
+        }
+
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ═══════════════════════════════════════
+           SECTIONS GENERAL
+           ═══════════════════════════════════════ */
+        .section {
+            padding: 8rem 3rem;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--gray-3);
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .section-heading {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ═══════════════════════════════════════
+           ABOUT / STATEMENT (word reveal)
+           ═══════════════════════════════════════ */
+        .statement-section {
+            padding: 10rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .statement {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .statement .word {
+            display: inline-block;
+            opacity: 0.15;
+            transition: opacity 0.1s ease;
+            margin-right: 0.25em;
+        }
+
+        .statement .word.active {
+            opacity: 1;
+        }
+
+        /* ═══════════════════════════════════════
+           YDELSER (Services)
+           ═══════════════════════════════════════ */
+        .services-section {
+            background: var(--white);
+            color: var(--black);
+            padding: 8rem 3rem;
+        }
+
+        .services-section .section-label { color: var(--gray-3); }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            padding: 2.5rem 0;
+            border-top: 1px solid rgba(15, 15, 15, 0.1);
+        }
+
+        .service-number {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--gray-3);
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .service-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .service-desc {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--gray-2);
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        /* ═══════════════════════════════════════
+           PORTFOLIO / CASES
+           ═══════════════════════════════════════ */
+        .portfolio-section {
+            padding: 8rem 3rem;
+        }
+
+        .portfolio-list {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .portfolio-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid rgba(245, 243, 239, 0.08);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .portfolio-item:first-child {
+            border-top: 1px solid rgba(245, 243, 239, 0.08);
+        }
+
+        .portfolio-name {
+            font-size: clamp(1.3rem, 2.5vw, 2rem);
+            font-weight: 600;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .portfolio-item:hover .portfolio-name {
+            transform: translateX(1.5rem);
+        }
+
+        .portfolio-tags {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--gray-3);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-align: right;
+        }
+
+        /* Hover image that follows cursor */
+        .portfolio-img {
+            position: fixed;
+            width: 350px;
+            height: 230px;
+            object-fit: cover;
+            border-radius: 6px;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            filter: grayscale(20%);
+        }
+
+        .portfolio-img.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        @media (max-width: 768px) {
+            .portfolio-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .portfolio-tags { text-align: left; }
+            .portfolio-img { display: none; }
+        }
+
+        /* ═══════════════════════════════════════
+           PROCES
+           ═══════════════════════════════════════ */
+        .process-section {
+            padding: 8rem 3rem;
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .process-section .section-label { color: var(--gray-3); }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .process-card {
+            padding: 2rem 0;
+        }
+
+        .process-number {
+            font-size: clamp(4rem, 8vw, 6rem);
+            font-weight: 200;
+            color: rgba(15, 15, 15, 0.08);
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .process-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .process-desc {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--gray-2);
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .process-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
+        /* ═══════════════════════════════════════
+           PRISER (Pricing) - IMPROVED
+           ═══════════════════════════════════════ */
+        .pricing-section {
+            padding: 8rem 3rem;
+        }
+
+        .pricing-list {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .pricing-item {
+            display: flex;
+            align-items: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid rgba(245, 243, 239, 0.08);
+        }
+
+        .pricing-item:first-child {
+            border-top: 1px solid rgba(245, 243, 239, 0.08);
+        }
+
+        .pricing-name {
+            font-size: 1.5rem;
+            font-weight: 500;
+            white-space: nowrap;
+            min-width: 180px;
+        }
+
+        .pricing-dots {
+            flex: 1;
+            border-bottom: 1px dotted var(--gray-2);
+            margin: 0 1.5rem;
+            min-width: 2rem;
+            position: relative;
+            top: -5px;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            white-space: nowrap;
+            color: var(--white);
+            min-width: 180px;
+            text-align: right;
+        }
+
+        .pricing-desc {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: var(--gray-3);
+            margin-top: 0.5rem;
+        }
+
+        .pricing-left {
+            flex-shrink: 0;
+        }
+
+        .pricing-right {
+            flex-shrink: 0;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 1rem;
+        }
+
+        /* CTA Button in pricing */
+        .pricing-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--white);
+            color: var(--black);
+            border: 1px solid var(--white);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pricing-cta:hover {
+            background: transparent;
+            color: var(--white);
+        }
+
+        /* Custom pricing row - special styling */
+        .pricing-item.custom {
+            background: rgba(245, 243, 239, 0.03);
+            margin: 0 -2rem;
+            padding: 3rem 2rem;
+            border-radius: 8px;
+            border: 1px solid rgba(245, 243, 239, 0.08);
+        }
+
+        .pricing-item.custom .pricing-name {
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .pricing-item.custom .pricing-price {
+            font-size: 1.8rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--gray-3);
+        }
+
+        @media (max-width: 700px) {
+            .pricing-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .pricing-dots { display: none; }
+            .pricing-right { 
+                text-align: left; 
+                align-items: flex-start;
+                width: 100%;
+            }
+            .pricing-price {
+                font-size: 2.5rem;
+                text-align: left;
+            }
+            .pricing-name {
+                font-size: 1.3rem;
+            }
+            .pricing-item.custom {
+                margin: 0;
+                padding: 2rem;
+            }
+        }
+
+        /* ═══════════════════════════════════════
+           KONTAKT (Contact) - IMPROVED
+           ═══════════════════════════════════════ */
+        .cta-section {
+            padding: 10rem 3rem;
+            text-align: center;
+            background: var(--black);
+        }
+
+        .cta-heading {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 3rem;
+            letter-spacing: -0.02em;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.2rem 3rem;
+            border: 1px solid var(--white);
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--white);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            background: transparent;
+            font-family: var(--font);
+            margin-bottom: 2rem;
+        }
+
+        .cta-button:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .cta-contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .cta-phone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cta-phone-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gray-3);
+        }
+
+        .cta-phone-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .cta-phone-number:hover {
+            color: var(--gray-3);
+        }
+
+        .cta-email {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cta-email-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gray-3);
+        }
+
+        .cta-email-address {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .cta-email-address:hover {
+            color: var(--gray-3);
+        }
+
+        /* Simple contact form */
+        .contact-form {
+            max-width: 500px;
+            margin: 4rem auto 0;
+            text-align: left;
+        }
+
+        .contact-form-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--gray-3);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group.full {
+            width: 100%;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray-3);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(245, 243, 239, 0.05);
+            border: 1px solid rgba(245, 243, 239, 0.1);
+            border-radius: 4px;
+            color: var(--white);
+            font-family: var(--font);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--white);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--white);
+            color: var(--black);
+            border: 1px solid var(--white);
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .form-submit:hover {
+            background: transparent;
+            color: var(--white);
+        }
+
+        @media (max-width: 600px) {
+            .cta-contact-info {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            .cta-phone-number {
+                font-size: 1.6rem;
+            }
+            .cta-email-address {
+                font-size: 1.2rem;
+            }
+            .form-row {
+                flex-direction: column;
+            }
+        }
+
+        /* ═══════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════ */
+        .footer {
+            padding: 3rem;
+            border-top: 1px solid rgba(245, 243, 239, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .footer-logo {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .footer-swatch {
+            display: flex;
+            gap: 4px;
+        }
+
+        .footer-swatch span {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .footer-center {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: var(--gray-3);
+        }
+
+        .footer-center a:hover { color: var(--white); }
+
+        .footer-right {
+            font-size: 0.8rem;
+            font-weight: 300;
+            color: var(--gray-3);
+        }
+
+        @media (max-width: 768px) {
+            .section { padding: 5rem 1.5rem; }
+            .services-section, .process-section { padding: 5rem 1.5rem; }
+            .statement-section { padding: 6rem 1.5rem; }
+            .cta-section { padding: 6rem 1.5rem; }
+            .footer {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* ═══════════════════════════════════════
+           GRAIN OVERLAY
+           ═══════════════════════════════════════ */
+        .grain {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* ═══════════════════════════════════════
+           GSAP REVEAL ANIMATIONS
+           ═══════════════════════════════════════ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .reveal-line {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Grain overlay -->
+    <div class="grain"></div>
+
+    <!-- Scroll progress bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="mainNav">
+        <a href="#" class="nav-logo">KULØR</a>
+        <ul class="nav-links">
+            <li><a href="#ydelser">Ydelser</a></li>
+            <li><a href="#arbejde">Arbejde</a></li>
+            <li><a href="#priser">Priser</a></li>
+            <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger" onclick="toggleMobile()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#ydelser" onclick="closeMobile()">Ydelser</a>
+        <a href="#arbejde" onclick="closeMobile()">Arbejde</a>
+        <a href="#priser" onclick="closeMobile()">Priser</a>
+        <a href="#kontakt" onclick="closeMobile()">Kontakt</a>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1 class="hero-title reveal">KULØR</h1>
+        <div class="hero-swatch reveal">
+            <span style="background:#C85A4A"></span>
+            <span style="background:#B87333"></span>
+            <span style="background:#2D5F4F"></span>
+            <span style="background:#3A7D8C"></span>
+            <span style="background:#5B6FBF"></span>
+            <span style="background:#7B5EA7"></span>
+            <span style="background:#B8B0C8"></span>
+        </div>
+        <p class="hero-subtitle reveal">Vi bygger hjemmesider der virker.</p>
+        <a href="#kontakt" class="hero-cta reveal">Start dit projekt &rarr;</a>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Marquee -->
+    <section class="marquee-section">
+        <div class="marquee-track">
+            <span>Webdesign ·</span>
+            <span>Redesign ·</span>
+            <span>Landingssider ·</span>
+            <span>Webdesign ·</span>
+            <span>Redesign ·</span>
+            <span>Landingssider ·</span>
+            <span>Webdesign ·</span>
+            <span>Redesign ·</span>
+            <span>Landingssider ·</span>
+            <span>Webdesign ·</span>
+            <span>Redesign ·</span>
+            <span>Landingssider ·</span>
+            <span>Webdesign ·</span>
+            <span>Redesign ·</span>
+            <span>Landingssider ·</span>
+            <span>Webdesign ·</span>
+            <span>Redesign ·</span>
+            <span>Landingssider ·</span>
+        </div>
+    </section>
+
+    <!-- Statement / About (word opacity reveal) -->
+    <section class="statement-section">
+        <p class="statement" id="statement">
+            Vi er et lille bureau med fokus på det der betyder noget. Hjemmesider der ser godt ud, loader hurtigt og faktisk konverterer. Ingen templates. Ingen bullshit. Kun resultater.
+        </p>
+    </section>
+
+    <!-- Ydelser / Services -->
+    <section class="services-section" id="ydelser">
+        <div class="container">
+            <div class="section-label reveal-line">Hvad vi tilbyder</div>
+            <div class="services-grid">
+                <div class="service-card reveal-line">
+                    <div class="service-number">01</div>
+                    <h3 class="service-title">Webdesign</h3>
+                    <p class="service-desc">Skræddersyede hjemmesider bygget til konvertering. Responsivt, hurtigt, optimeret til søgemaskiner.</p>
+                </div>
+                <div class="service-card reveal-line">
+                    <div class="service-number">02</div>
+                    <h3 class="service-title">Redesign</h3>
+                    <p class="service-desc">Din eksisterende hjemmeside fortjener bedre. Vi redesigner med fokus på hastighed, branding og resultater.</p>
+                </div>
+                <div class="service-card reveal-line">
+                    <div class="service-number">03</div>
+                    <h3 class="service-title">Landingssider</h3>
+                    <p class="service-desc">Konverteringsfokuserede landingssider til kampagner, produktlancering og lead generation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio / Cases -->
+    <section class="portfolio-section" id="arbejde">
+        <div class="portfolio-list">
+            <div class="section-label reveal-line">Udvalgte projekter</div>
+
+            <div class="portfolio-item reveal-line" data-img="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=700&q=80">
+                <div class="portfolio-name">Tandlægerne Østerbro</div>
+                <div class="portfolio-tags">Hjemmeside · E-commerce</div>
+            </div>
+
+            <div class="portfolio-item reveal-line" data-img="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=700&q=80">
+                <div class="portfolio-name">Nordic Craft Coffee</div>
+                <div class="portfolio-tags">Redesign · Branding</div>
+            </div>
+
+            <div class="portfolio-item reveal-line" data-img="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=700&q=80">
+                <div class="portfolio-name">Byggeservice Valby</div>
+                <div class="portfolio-tags">Landingsside</div>
+            </div>
+
+            <div class="portfolio-item reveal-line" data-img="https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80">
+                <div class="portfolio-name">Studio Amager</div>
+                <div class="portfolio-tags">Hjemmeside · SEO</div>
+            </div>
+
+            <div class="portfolio-item reveal-line" data-img="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=700&q=80">
+                <div class="portfolio-name">Grøn Energi ApS</div>
+                <div class="portfolio-tags">Redesign · Konvertering</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hover image for portfolio -->
+    <img src="" alt="" class="portfolio-img" id="portfolioImg">
+
+    <!-- Proces -->
+    <section class="process-section">
+        <div class="container">
+            <div class="section-label reveal-line">Processen</div>
+            <div class="process-grid">
+                <div class="process-card reveal-line">
+                    <div class="process-number">01</div>
+                    <h3 class="process-title">Samtale</h3>
+                    <p class="process-desc">Vi starter med en uforpligtende snak om dit projekt, dine mål og din målgruppe.</p>
+                </div>
+                <div class="process-card reveal-line">
+                    <div class="process-number">02</div>
+                    <h3 class="process-title">Design</h3>
+                    <p class="process-desc">Vi designer og bygger din side med fokus på æstetik, hastighed og konvertering.</p>
+                </div>
+                <div class="process-card reveal-line">
+                    <div class="process-number">03</div>
+                    <h3 class="process-title">Lancering</h3>
+                    <p class="process-desc">Vi lancerer din side og sørger for at alt virker perfekt. Fri support medfølger.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Teamet bag -->
+    <section class="team-section" style="padding:8rem 3rem;background:var(--black);">
+        <div style="max-width:600px;margin:0 auto;text-align:center;">
+            <div class="section-label reveal-line" style="text-align:center;">Hvem står bag</div>
+            <h2 class="section-heading reveal-line" style="text-align:center;margin-bottom:3rem;">Teamet bag Kulør</h2>
+            <div class="team-member reveal-line" style="text-align:center;">
+                <img src="laurits.png" alt="Laurits Wehding" style="width:220px;height:220px;border-radius:50%;object-fit:cover;filter:grayscale(100%);margin:0 auto 2rem;background:#1a1a1a;">
+                <h3 style="font-size:1.5rem;font-weight:600;margin-bottom:0.5rem;color:var(--white);">Laurits Wehding</h3>
+                <p style="font-size:0.9rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--gray-3);margin-bottom:1.5rem;">Founder & Designer</p>
+                <p style="font-size:1rem;font-weight:300;color:var(--gray-2);line-height:1.8;max-width:450px;margin:0 auto;">Jeg har bygget hjemmesider og digitale produkter i over 5 år. Fra startups til lokale virksomheder. Kulør er bygget på én simpel idé: alle fortjener en hjemmeside der faktisk virker. Ikke en template fra 2018, men noget der får kunder i butikken.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Priser / Pricing - IMPROVED -->
+    <section class="pricing-section" id="priser">
+        <div class="pricing-list">
+            <div class="section-label reveal-line">Gennemsigtige priser</div>
+
+            <div class="pricing-item reveal-line">
+                <div class="pricing-left">
+                    <div class="pricing-name">Landingsside</div>
+                    <span class="pricing-desc">En side, optimeret til konvertering</span>
+                </div>
+                <div class="pricing-dots"></div>
+                <div class="pricing-right">
+                    <div class="pricing-price">2.500 kr.</div>
+                    <a href="mailto:lauritsbonsvigwehding@gmail.com?subject=Landingsside" class="pricing-cta">Kom i gang →</a>
+                </div>
+            </div>
+
+            <div class="pricing-item reveal-line">
+                <div class="pricing-left">
+                    <div class="pricing-name">Hjemmeside</div>
+                    <span class="pricing-desc">Komplet med CMS og SEO-setup</span>
+                </div>
+                <div class="pricing-dots"></div>
+                <div class="pricing-right">
+                    <div class="pricing-price">5.000 kr.</div>
+                    <a href="mailto:lauritsbonsvigwehding@gmail.com?subject=Hjemmeside" class="pricing-cta">Kom i gang →</a>
+                </div>
+            </div>
+
+            <div class="pricing-item custom reveal-line">
+                <div class="pricing-left">
+                    <div class="pricing-name">Custom</div>
+                    <span class="pricing-desc">Større projekter og specialløsninger</span>
+                </div>
+                <div class="pricing-dots"></div>
+                <div class="pricing-right">
+                    <div class="pricing-price">Lad os snakke</div>
+                    <a href="mailto:lauritsbonsvigwehding@gmail.com?subject=Custom projekt" class="pricing-cta">Kontakt os →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kontakt / Contact - IMPROVED -->
+    <section class="cta-section" id="kontakt">
+        <h2 class="cta-heading reveal">Klar til en ny<br>hjemmeside?</h2>
+        <a href="mailto:lauritsbonsvigwehding@gmail.com?subject=Nyt projekt" class="cta-button reveal">Start dit projekt &rarr;</a>
+        
+        <div class="cta-contact-info reveal">
+            <div class="cta-phone">
+                <span class="cta-phone-label">Ring til os</span>
+                <a href="tel:+4522442766" class="cta-phone-number">+45 22 44 27 66</a>
+            </div>
+            <div class="cta-email">
+                <span class="cta-email-label">Skriv til os</span>
+                <a href="mailto:lauritsbonsvigwehding@gmail.com" class="cta-email-address">lauritsbonsvigwehding@gmail.com</a>
+            </div>
+        </div>
+
+        <!-- Simple contact form -->
+        <form class="contact-form reveal" id="contactForm" action="https://formsubmit.co/lauritsbonsvigwehding@gmail.com" method="POST">
+            <input type="hidden" name="_subject" value="Ny henvendelse fra kulor.studio">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_next" value="https://kulor.studio">
+            <div class="contact-form-title">Eller skriv en besked</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Navn</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+            </div>
+            <div class="form-group full">
+                <label for="message">Besked</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="form-submit">Send besked</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-left">
+            <span class="footer-logo">KULØR</span>
+            <div class="footer-swatch">
+                <span style="background:#C85A4A"></span>
+                <span style="background:#B87333"></span>
+                <span style="background:#2D5F4F"></span>
+                <span style="background:#3A7D8C"></span>
+                <span style="background:#5B6FBF"></span>
+                <span style="background:#7B5EA7"></span>
+                <span style="background:#B8B0C8"></span>
+            </div>
+        </div>
+        <div class="footer-center">
+            <a href="mailto:lauritsbonsvigwehding@gmail.com">lauritsbonsvigwehding@gmail.com</a>
+            <a href="tel:+4522442766">+45 22 44 27 66</a>
+        </div>
+        <div class="footer-cvr" style="font-size: 11px; color: #666; width: 100%; text-align: center; margin-top: 0.5rem;">
+            Kulør v/ Caïssa Capital ApS · CVR 45760227
+        </div>
+        <div class="footer-right">
+            &copy; 2026 Kulør
+        </div>
+    </footer>
+
+    <!-- CDN Scripts -->
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+
+    <script>
+        // ═══════════════════════════════════════
+        // LENIS SMOOTH SCROLL
+        // ═══════════════════════════════════════
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            orientation: 'vertical',
+            smoothWheel: true,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Integrate with GSAP ScrollTrigger
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+
+        // ═══════════════════════════════════════
+        // SCROLL PROGRESS BAR
+        // ═══════════════════════════════════════
+        const progressBar = document.getElementById('scrollProgress');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            progressBar.style.width = progress + '%';
+        });
+
+        // ═══════════════════════════════════════
+        // NAVIGATION SCROLL EFFECT
+        // ═══════════════════════════════════════
+        const nav = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 80) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // ═══════════════════════════════════════
+        // MOBILE MENU
+        // ═══════════════════════════════════════
+        function toggleMobile() {
+            const menu = document.getElementById('mobileMenu');
+            const burger = document.getElementById('hamburger');
+            burger.classList.toggle('active');
+            menu.classList.toggle('open');
+            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+        }
+
+        function closeMobile() {
+            const menu = document.getElementById('mobileMenu');
+            const burger = document.getElementById('hamburger');
+            burger.classList.remove('active');
+            menu.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // ═══════════════════════════════════════
+        // GSAP REVEAL ANIMATIONS
+        // ═══════════════════════════════════════
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero reveals
+        gsap.utils.toArray('.hero .reveal').forEach((el, i) => {
+            gsap.fromTo(el, 
+                { opacity: 0, y: 40 },
+                { 
+                    opacity: 1, y: 0, 
+                    duration: 1, 
+                    delay: 0.3 + i * 0.15,
+                    ease: 'power3.out'
+                }
+            );
+        });
+
+        // Section reveals
+        gsap.utils.toArray('.reveal-line').forEach((el) => {
+            gsap.fromTo(el,
+                { opacity: 0, y: 30 },
+                {
+                    opacity: 1, y: 0,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 88%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+        });
+
+        // CTA reveals
+        gsap.utils.toArray('.cta-section .reveal').forEach((el, i) => {
+            gsap.fromTo(el,
+                { opacity: 0, y: 40 },
+                {
+                    opacity: 1, y: 0,
+                    duration: 0.9,
+                    delay: i * 0.1,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 88%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+        });
+
+        // ═══════════════════════════════════════
+        // WORD-BY-WORD OPACITY REVEAL
+        // ═══════════════════════════════════════
+        const statementEl = document.getElementById('statement');
+        const statementText = statementEl.textContent.trim();
+        const words = statementText.split(/\s+/);
+        statementEl.innerHTML = words.map(w => `<span class="word">${w}</span>`).join(' ');
+
+        const wordSpans = statementEl.querySelectorAll('.word');
+        
+        ScrollTrigger.create({
+            trigger: '.statement-section',
+            start: 'top 80%',
+            end: 'bottom 30%',
+            scrub: 0.5,
+            onUpdate: (self) => {
+                const progress = self.progress;
+                wordSpans.forEach((span, i) => {
+                    const wordProgress = i / wordSpans.length;
+                    if (wordProgress < progress) {
+                        span.classList.add('active');
+                    } else {
+                        span.classList.remove('active');
+                    }
+                });
+            }
+        });
+
+        // ═══════════════════════════════════════
+        // PORTFOLIO HOVER IMAGE FOLLOW
+        // ═══════════════════════════════════════
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        const portfolioImg = document.getElementById('portfolioImg');
+        let imgX = 0, imgY = 0;
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateImg() {
+            imgX += (mouseX - imgX) * 0.1;
+            imgY += (mouseY - imgY) * 0.1;
+            portfolioImg.style.left = imgX + 20 + 'px';
+            portfolioImg.style.top = imgY - 115 + 'px';
+            requestAnimationFrame(animateImg);
+        }
+        animateImg();
+
+        portfolioItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                const src = item.getAttribute('data-img');
+                portfolioImg.src = src;
+                portfolioImg.classList.add('visible');
+            });
+            item.addEventListener('mouseleave', () => {
+                portfolioImg.classList.remove('visible');
+            });
+        });
+
+        // ═══════════════════════════════════════
+        // SMOOTH SCROLL TO ANCHORS
+        // ═══════════════════════════════════════
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    lenis.scrollTo(target, { offset: -80 });
+                }
+            });
+        });
+
+        // ═══════════════════════════════════════
+        // CONTACT FORM SUBMIT - FORMSUBMIT.CO
+        // ═══════════════════════════════════════
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const formContainer = form.parentElement;
+            
+            // Create success message
+            const successDiv = document.createElement('div');
+            successDiv.className = 'form-success';
+            successDiv.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--white);"><h3 style="margin-bottom:1rem;font-size:1.5rem;">Tak! ✨</h3><p>Vi vender tilbage inden for 24 timer.</p></div>';
+            
+            // Hide form, show success
+            form.style.display = 'none';
+            formContainer.appendChild(successDiv);
+            
+            // Submit to FormSubmit
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).catch(err => console.log('Form submitted', err));
+        });
+    </script>
+</body>
+</html>
